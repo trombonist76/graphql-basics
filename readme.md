@@ -11,20 +11,13 @@
 ### <http://localhost:4000/>
 <br>
 
+
 ## **Challange 1** Then you can try queries below
-<<<<<<< HEAD
 
 ### **In this challange, I learned how to write query and work with relational data.**
 <br>
 
-=======
->>>>>>> b9270432dea5a56afc3e68d48a0f7d5c9f480858
-
-### **In this challange, I learned how to write query and work with relational data.**
-<br>
-
-
-```json
+```
 query getUsers {
   users {
     id
@@ -112,12 +105,7 @@ query getLocation{
 ### **In this challange, I learned CRUD operations on graphql.**
 <br>
 
-
-<<<<<<< HEAD
 ```
-=======
-```json
->>>>>>> b9270432dea5a56afc3e68d48a0f7d5c9f480858
 mutation createUser{
   createUser(data:
     {
