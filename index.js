@@ -1,11 +1,11 @@
-const { ApolloServer, gql } = require('apollo-server');
+const { createServer, createPubSub } = require('@graphql-yoga/node');
+const { nanoid } = require('nanoid');
 const {
   ApolloServerPluginLandingPageGraphQLPlayground
 } = require('apollo-server-core');
-const { nanoid } = require('nanoid');
+const pubSub = createPubSub()
 
-
-const typeDefs = gql`
+const typeDefs = `
   type User {
     id: ID!
     username: String!
@@ -135,29 +135,54 @@ const typeDefs = gql`
     participant(id:ID!): Participant
   }
 
+  type Subscription {
+    userCreated: User!
+    eventCreated: Event!
+    participantAdded: Participant!
+  }
+
 `;
 
 const {users,locations,events,participants} = require("./data.json")
 
 
 const resolvers = {
+  Subscription: {
+    userCreated: {
+      subscribe: (_,__, {pubSub}) => pubSub.subscribe("userCreated"),
+      resolve: (payload) => payload,
+    },
+
+    eventCreated: {
+      subscribe: (_,__, {pubSub}) => pubSub.subscribe("eventCreated"),
+      resolve: (payload) => payload,
+    },
+
+    participantAdded: {
+      subscribe: (_,__, {pubSub}) => pubSub.subscribe("participantAdded"),
+      resolve: (payload) => payload,
+    },
+  },
 
   Mutation: {
-    createUser: (parent,{data}) => {
+    createUser: (parent,{data}, {pubSub}) => {
       const user = {
         id: nanoid(),
         ...data
       }
+
       users.push(user)
+      pubSub.publish("userCreated",user)
       return user
     },
 
-    createEvent: (parent,{data}) => {
+    createEvent: (parent,{data}, {pubSub}) => {
       const event = {
         id: nanoid(),
         ...data
       }
       events.push(event)
+      pubSub.publish("eventCreated",event)
       return event
     },
 
@@ -176,6 +201,7 @@ const resolvers = {
         ...data
       }
       participants.push(participant)
+      pubSub.publish("participantAdded",participant)
       return participant
     },
 
@@ -325,15 +351,17 @@ const resolvers = {
 };
 
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+const server = new createServer({
+  schema:{
+    typeDefs,
+    resolvers
+  },
+  context:{
+    pubSub
+  },
   plugins: [
     ApolloServerPluginLandingPageGraphQLPlayground({}),
   ],
 });
 
-// The `listen` method launches a web server.
-server.listen().then(({ url }) => {
-  console.log(`🚀  Server ready at ${url}`);
-});
+server.start();

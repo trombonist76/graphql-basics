@@ -17,7 +17,7 @@
 ### **In this challange, I learned how to write query and work with relational data.**
 <br>
 
-```
+```perl
 query getUsers {
   users {
     id
@@ -105,12 +105,11 @@ query getLocation{
 ### **In this challange, I learned CRUD operations on graphql.**
 <br>
 
-```
+```perl
 mutation createUser{
-  createUser(data:
-    {
-      username: "John"
-      email:"asd@fgh.com"
+  createUser(data:{
+    username: "John"
+    email:"asd@fgh.com"
   })
   {
     id
@@ -121,20 +120,19 @@ mutation createUser{
 }
 
 mutation createEvent{
-  createEvent(data:
-    {
-     	title: "Create Event Mutation"
-      desc: "New event"
-      date: "2022-27-08",
-      from: "11:00",
-      to: "12:00",
-      location_id: 1,
-      user_id: 1
+  createEvent(data:{
+    title: "Create Event Mutation"
+    desc: "New event"
+    date: "2022-27-08",
+    from: "11:00",
+    to: "12:00",
+    location_id: 1,
+    user_id: 1
 
     })
   {
     id
-		title
+    title
     desc
     date
     from
@@ -156,12 +154,11 @@ mutation createEvent{
 }
 
 mutation createLocation{
-  createLocation(data:
-    {
-      name: "Create Location Mutation"
-      desc: "New Location"
-      lat: 55
-      lng: -160
+  createLocation(data:{
+    name: "Create Location Mutation"
+    desc: "New Location"
+    lat: 55
+    lng: -160
 
   })
   {
@@ -174,12 +171,12 @@ mutation createLocation{
 
 mutation createParticipant {
   createParticipant(data:{
-		user_id: 1
+    user_id: 1
     event_id: 2
   })
   {
     id
-		user{username}
+    user{username}
     event{title}
   }
 }
@@ -194,7 +191,7 @@ mutation updateUser{
   {
     id	
   	username
-		email
+    email
     events{title}
   }
 }
@@ -203,12 +200,12 @@ mutation updateEvent{
   updateEvent(
     id:2
     data:{
-    	title:"Event Updated"
+    title:"Event Updated"
     }
   )
   {
     id
-		title
+    title
     desc
     date
     from
@@ -238,7 +235,7 @@ mutation updateLocation{
   )
   {
     id	
-		name
+    name
     desc
     events{title}
   }
@@ -252,7 +249,7 @@ mutation updateParticipant{
     }
   )
   {
-		id
+    id
     user{username}
     event_id
     event{title}
@@ -273,7 +270,7 @@ mutation deleteEvent{
   )
   {
     id
-		title
+    title
     desc
     date
     from
@@ -300,7 +297,7 @@ mutation deleteLocation{
   )
   {
     id	
-		name
+    name
     desc
     events{title}
   }
@@ -311,18 +308,18 @@ mutation deleteParticipant{
     id:4
   )
   {
-		id
+    id
     user{username}
     event_id
     event{title}
   }
 }
 
-mutation	deleteAllUsers{
+mutation deleteAllUsers{
   deleteAllUsers{count}
 }
 
-mutation	deleteAllEvents{
+mutation deleteAllEvents{
   deleteAllEvents{count}
 }
 
@@ -332,5 +329,47 @@ mutation deleteAllLocations{
 
 mutation deleteAllParticipants{
   deleteAllParticipants{count}
+}
+```
+
+## **Challange 3** You can try queries below
+
+### **In this challange, I learned SUBSCRIPTIONS on graphql.**
+### Subscription is a WebSocket-based structure where we can be informed about the events (add, delete, update, etc.) in real time.
+#### **NOTE: For listen real-time events you must run subscription before updating any state. Otherwise you can't listen any event.**
+<br>
+
+```perl
+subscription UserCreated {
+  userCreated {
+    id
+    username
+    email
+  }
+}
+
+subscription EventCreated {
+  eventCreated{
+    id
+    user {
+      username
+    }
+    title
+		location{
+      name
+    }
+    
+  }
+}
+
+subscription ParticipantAdded {
+  participantAdded{
+    id
+    user {
+      username
+    }
+    event{title}
+    
+  }
 }
 ```
